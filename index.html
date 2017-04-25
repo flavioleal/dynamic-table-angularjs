@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-br" ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>Tabela dinâmica</title>
+
+  <!-- Bootstrap -->
+  <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/app.css" rel="stylesheet">
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body ng-controller="tabelaFormulario">
+  <div class="jumbotron">
+    <h3>Tabela dinâmica</h3>
+
+    <div class="form-group">
+      <label for="nome-tabela" class="col-md-3 control-label">Nome da Tabela:</label>
+      <div class="col-md-8">
+        <input type="text" class="form-control" id="nome-tabela"
+        ng-model="registro.NomeTabela">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="nome-exibicao" class="col-md-3 control-label">Nome para Exibição:</label>
+      <div class="col-md-8">
+        <input type="text" class="form-control" id="nome-exibicao"
+        ng-model="registro.NomeTabelaExibicao">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="ano-exercicio" class="col-md-3 control-label">Ano de Exercício:</label>
+      <div class="col-md-2">
+        <input type="text" class="form-control" id="ano-exercicio"
+        ng-model="registro.AnoExercicio">
+      </div>
+
+      <button type="button" class="btn btn-success" ng-click="abrirModaladicionarColuna()"> Adicionar coluna</button>
+    </div>
+
+
+    {{registro}}
+    <br/>
+    <button type="button" class="btn btn-primary" ng-click="adicionarLinha()" style="float: right;">Adicionar Linha</button>
+    <br/>
+    <!-- Inicio tabela preview -->
+    <table id="tabelaPreview" class="table table-bordered table-striped" ng-show="registro.Colunas.length > 0">
+      <thead>
+        <tr>
+          <th style="text-align: center;">Ações</th>
+          <th ng-repeat="coluna in registro.Colunas" style="text-align: center">
+            <button type="button" class="" style="margin-bottom: 0px; float: left;" ng-click="moverColuna(coluna, -1)">
+              <i class="glyphicon glyphicon-arrow-left"></i>
+            </button>
+            <a ng-click="editarColuna(coluna)"> {{coluna.TituloColuna}} </a>
+            <button type="button" class="" style="margin-bottom: 0px; float: right;" ng-click="moverColuna(coluna, 1)">
+              <i class="glyphicon glyphicon-arrow-right"></i>
+            </button>
+          </th> <!--Repeat de colunas-->
+        </tr>
+      </thead>
+      <tbody >
+        <tr ng-repeat="linha in registro.Linhas">
+
+          <!--Repeat de linhas-->
+          <td>
+            <button type="button" class="" style="margin-bottom: 0px;" ng-click="moverLinha(linha, -1)">
+              <i class="glyphicon glyphicon-arrow-up"></i>
+            </button>
+            <button type="button" class="" style="margin-bottom: 0px;" ng-click="moverLinha(linha, 1)">
+              <i class="glyphicon glyphicon-arrow-down"></i>
+            </button>
+            <button type="button" class="" ng-click="removerLinha(linha)">
+              <i class="glyphicon glyphicon-remove"></i>
+            </button>
+          </td>
+          <td ng-repeat="coluna in registro.Colunas">
+            <div class="form-group">
+              <div ng-if="coluna.InseridoPorUo == true">
+                <div class="input-group">
+                  <select ng-model="linha[coluna.TituloColuna].Mascara" class="form-control">
+                    <option>Fração</option>
+                    <option>Texto</option>
+                    <option>Moeda</option>
+                  </select>
+
+
+                  <input type="checkbox" ng-model="linha[coluna.TituloColuna].InObrigatorio" class="form-control"/>
+
+                  <input type="text" maxlength="3" number-only name="MaxCaracteres" ng-model="linha[coluna.TituloColuna].NumeroMaxCaracteres" class="form-control"/>
+                </div>
+              </div> <!-- UO-->
+              <div ng-if="coluna.InseridoPorUo == false">
+                <input type="text" id="inputText" name="linha" ng-model="linha[coluna.TituloColuna].ConteudoPadrao"  class="form-control"/>
+              </div> <!-- Cadastrador-->
+            </div>
+          </td> <!--Repeat de colunas-->
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- final tabela previews -->
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><col-md- aria-hidden="true">&times;</col-md-></button>
+          <h4 class="modal-title" id="myModalLabel">Adicionar Coluna</h4>
+        </div>
+        <div class="modal-body">
+
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="col-md-12 control-label" for="titulo-coluna">Título da Coluna</label>
+              <input type="text" class="col-md-12 form-control"
+              id="titulo-coluna"
+              name="titulo-coluna"
+              ng-model="coluna.TituloColuna" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="col-md-12 control-label" for="inserido-por-uo">Dados inseridos pela UO</label>
+              <label class="col-md-2 control-label label-radio">
+                <input type="radio"
+                ng-model="coluna.InseridoPorUo"
+                ng-value="true"
+                class="form-control"/>
+                <span> Sim </span>
+              </label>
+            </div>
+            <div class="form-group">
+              <label class="col-md-2 control-label label-radio">
+                <input type="radio"
+                ng-model="coluna.InseridoPorUo"
+                ng-value="false"
+                class="form-control"
+                />
+                <span> Não </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <br/>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" ng-click="adicionarColuna()">Adicionar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+
+  <script src="lib/angular/angular.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
