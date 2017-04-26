@@ -26,7 +26,7 @@ app.controller("tabelaFormulario", function($scope) {
   $scope.removerColuna = function(coluna) {
     for (var i in this.registro.Colunas) {
       if ($scope.registro.Colunas[i] == coluna)
-      $scope.registro.colunas.splice(i, 1);
+      $scope.registro.Colunas.splice(i, 1);
     }
     $scope.coluna = {};
     $scope.fecharModalColuna();
@@ -54,7 +54,7 @@ app.controller("tabelaFormulario", function($scope) {
   };
 
   $scope.removerLinha = function(linha) {
-    for (var i in $scope.registro.linhas) {
+    for (var i in $scope.registro.Linhas) {
       if ($scope.registro.Linhas[i] == linha)
       $scope.registro.Linhas.splice(i, 1);
     }
