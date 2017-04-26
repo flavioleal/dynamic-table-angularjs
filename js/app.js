@@ -1,8 +1,49 @@
 var app = angular.module("app", []);
 
 app.controller("tabelaFormulario", function($scope) {
+
+
+
   $scope.registro = { Colunas: [], Linhas: []};
   $scope.coluna = {};
+
+  //$scope.carregarDadosTeste();
+  $scope.registro = {
+    "Colunas":[
+        {
+            "TituloColuna":"Complementar",
+            "InseridoPorUo":false
+        },
+        {
+            "TituloColuna":"Informações",
+            "InseridoPorUo":true
+        }
+    ],
+    "Linhas":[
+        {
+            "Complementar":{
+                "ConteudoPadrao":"Nome"
+            },
+            "Informações":{
+                "Mascara":"Texto",
+                "InObrigatorio":true,
+                "NumeroMaxCaracteres":"300"
+            }
+        },
+        {
+            "Complementar":{
+                "ConteudoPadrao":"Telefone"
+            },
+            "Informações":{
+                "Mascara":"Texto",
+                "NumeroMaxCaracteres":"9"
+            }
+        }
+    ],
+    "NomeTabela":"Tabela de funcionários",
+    "NomeTabelaExibicao":"Funcionários",
+    "AnoExercicio":"2017"
+};
   //Coluna
   $scope.adicionarColuna = function () {
     $scope.registro.Colunas.push($scope.coluna);
